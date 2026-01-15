@@ -1,0 +1,55 @@
+[
+    {
+      "name": "Hands", 
+      "mag_size":  0, 
+      "accel": 10,
+      "DMG": 20, 
+      "lifetime": 100, 
+      "spread": 0, 
+      "pellets": 0, 
+      "fire_rate": 100,
+      "barrel": 10, 
+      "radius": 16
+    },
+
+    {
+      "name": "Pistol", 
+      "mag_size":  6, 
+      "accel": 20,
+      "DMG": 20, 
+      "lifetime": 100, 
+      "spread": 0, 
+      "pellets": 0, 
+      "fire_rate": 300,
+      "barrel": 16, 
+      "radius": 10
+    },
+
+    {
+      "name": "Shotgun", 
+      "mag_size":  2,  
+      "accel": 10,
+      "DMG": 10, 
+      "lifetime": 20, 
+      "spread": 15, 
+      "pellets": 5, 
+      "fire_rate": 600,
+      "barrel": 24, 
+      "radius": 12
+    },
+
+    {
+      "name": "UZI", 
+      "mag_size":  16, 
+      "accel": 10,
+      "DMG": 10, 
+      "lifetime": 100, 
+      "spread": 0, 
+      "pellets": 0, 
+      "fire_rate": 100,
+      "barrel": 32, 
+      "radius": 10
+    }
+
+]
+
