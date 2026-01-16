@@ -31,12 +31,13 @@ class Weapon:
         self.gun_angle = 0
         
     
-    def fire(self, aim_pos, owner, level, cam):
+    def fire(self, aim_pos, owner, level, cam, sfx):
             time_now = int(time.time() * 1000)
             #screen_pos = cam.world_to_screen(self.pos)
 
             if self.current_ammo > 0 and (time_now - self.last_shot_time) > self.fire_rate:
                 cam.add_shake(self.shake_strength)
+                sfx.play_sound(self.name, 0.8)
                 self.recoil_x = -math.cos(self.gun_angle) * self.recoil
                 self.recoil_y = math.sin(self.gun_angle) * self.recoil
                 self.last_shot_time = time_now

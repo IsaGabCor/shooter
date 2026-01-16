@@ -7,7 +7,7 @@ class Camera:
         self.height = height
 
         self.shake_strength = 0
-        self.shake_decay = 0.9
+        self.shake_decay = .5
         self.shake_offset = pygame.math.Vector2(0, 0)
 
     def follow(self, target, map_width, map_height):
@@ -37,7 +37,6 @@ class Camera:
     
     def add_shake(self, strength):
         self.shake_strength = max(self.shake_strength, strength)
-        self.update_shake()
 
     def update_shake(self):
         if self.shake_strength > 0.1:

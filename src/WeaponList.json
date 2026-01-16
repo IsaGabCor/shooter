@@ -22,7 +22,7 @@
       "spread": 0, 
       "pellets": 0, 
       "fire_rate": 300,
-      "barrel": 16, 
+      "barrel": 8, 
       "radius": 10,
       "recoil": 6,
       "shake_strength": 1
@@ -40,7 +40,7 @@
       "barrel": 24, 
       "radius": 12,
       "recoil": 16,
-      "shake_strength": 20
+      "shake_strength": 3
     },
 
     {
@@ -52,7 +52,7 @@
       "spread": 0, 
       "pellets": 0, 
       "fire_rate": 20,
-      "barrel": 6, 
+      "barrel": 10, 
       "radius": 10,
       "recoil": 6,
       "shake_strength": 1

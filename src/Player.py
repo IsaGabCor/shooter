@@ -28,7 +28,7 @@ class Player:
         self.weapon = Weapon.Weapon(weapon_data)
         self.health = 100
 
-    def player_update(self, window, cam, level, map_width, map_height):
+    def player_update(self, window, cam, level, map_width, map_height, sfx):
         pressed_keys = pygame.key.get_pressed()
         mouse_click = pygame.mouse.get_pressed()[0]
         mouse_pos = pygame.mouse.get_pos()
@@ -39,7 +39,7 @@ class Player:
         self.player_draw(window, cam)
         self.weapon.update_weapon(self.pos, screen_pos, window, cam)
         if mouse_click:
-            self.use_weapon(level, screen_pos, cam)
+            self.use_weapon(level, screen_pos, cam, sfx)
         self.display_player_stats(window)
         
     def input(self, keys):
@@ -76,8 +76,8 @@ class Player:
 
         self.rect.center = self.pos
 
-    def use_weapon(self, level, screen_pos, cam):
-            self.weapon.fire(screen_pos, self, level, cam)
+    def use_weapon(self, level, screen_pos, cam, sfx):
+            self.weapon.fire(screen_pos, self, level, cam, sfx)
 
     def display_player_stats(self, window):
         # Font (use a default system font)
