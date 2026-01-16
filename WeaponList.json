@@ -9,7 +9,8 @@
       "pellets": 0, 
       "fire_rate": 100,
       "barrel": 10, 
-      "radius": 16
+      "radius": 16,
+      "recoil": 0
     },
 
     {
@@ -22,7 +23,9 @@
       "pellets": 0, 
       "fire_rate": 300,
       "barrel": 16, 
-      "radius": 10
+      "radius": 10,
+      "recoil": 6,
+      "shake_strength": 1
     },
 
     {
@@ -35,20 +38,24 @@
       "pellets": 5, 
       "fire_rate": 600,
       "barrel": 24, 
-      "radius": 12
+      "radius": 12,
+      "recoil": 16,
+      "shake_strength": 20
     },
 
     {
-      "name": "UZI", 
+      "name": "MAC-10", 
       "mag_size":  16, 
       "accel": 10,
       "DMG": 10, 
       "lifetime": 100, 
       "spread": 0, 
       "pellets": 0, 
-      "fire_rate": 100,
-      "barrel": 32, 
-      "radius": 10
+      "fire_rate": 20,
+      "barrel": 6, 
+      "radius": 10,
+      "recoil": 6,
+      "shake_strength": 1
     }
 
 ]

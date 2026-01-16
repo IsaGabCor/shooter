@@ -1,0 +1,18 @@
+shooter game progress
+
+features to be implemented:
+- collision (walls, players and bullets)
+- particle system(blood, gun smoke/fire)
+- sounds
+- animations
+- reload system
+- gun pick up and switching
+- melee attacks
+
+current tasks:
+- camera should react to where the cursor position is
+- center the DAMN MOUSE!!!!
+
+current bugs:
+- bullets are not accurate to crosshair pos while moving and shooting
+- camera shake sets hard position of camera

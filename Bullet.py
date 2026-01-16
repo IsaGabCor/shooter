@@ -20,10 +20,10 @@ class Bullet:
         self.current_life = self.lifetime
         self.alive = True
 
-    def update_bullet(self, window):
+    def update_bullet(self, window, cam):
         if self.current_life > 0:
             self.update_pos()
-            self.draw_bullet(window)
+            self.draw_bullet(window, cam)
             self.current_life -= 1
         else:
             self.alive = False
@@ -38,5 +38,6 @@ class Bullet:
         self.pos[0] += vx
         self.pos[1] += vy
     
-    def draw_bullet(self, window):
-        pygame.draw.circle(window, WHITE, self.pos , 2)
+    def draw_bullet(self, window, cam):
+        screen_pos = cam.world_to_screen(self.pos)
+        pygame.draw.circle(window, WHITE, screen_pos, 2)

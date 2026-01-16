@@ -93,4 +93,13 @@ class Player:
         screen_pos = cam.world_to_screen(self.rect.topleft)
         window.blit(self.surf, screen_pos)
 
+        # DEBUG: draw rect
+        #debug_rect = pygame.Rect(screen_pos, self.rect.size)
+        #pygame.draw.rect(window, (0,255,0), debug_rect, 1)
+
+        # DEBUG: draw player center
+        #font = pygame.font.Font(None, 18)
+        #text = font.render(str(self.rect.center), True, (255,255,0))
+        #window.blit(text, (10,40))
+
 

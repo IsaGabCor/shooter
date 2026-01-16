@@ -1,13 +1,15 @@
 import pygame
 import sys
+import os
 import json
 import Player, Level, Tiles, Camera
 
 pygame.init()
 
 #SYSTEM/WINDOW CONSTANTS
-#WIDTH = 960
-#HEIGHT = 768
+os.environ['SDL_VIDEO_CENTERED'] = '1'
+info = pygame.display.Info()
+SCREEN_WIDTH, SCREEN_HEIGHT = info.current_w, info.current_h
 VIRTUAL_WIDTH = 320
 VIRTUAL_HEIGHT = 256
 map_scale = 3
@@ -18,9 +20,12 @@ with open("WeaponList.json") as f:
 
 FramePerSec = pygame.time.Clock()
 pygame.display.set_caption("WIP")
-DisplayWindow = pygame.display.set_mode((VIRTUAL_WIDTH * map_scale, VIRTUAL_HEIGHT * map_scale))
+DisplayWindow = pygame.display.set_mode((SCREEN_WIDTH - 100, SCREEN_HEIGHT - 100))
 pygame.event.set_grab(True)  # confines cursor to window
 pygame.mouse.set_visible(False)  # hides the OS cursor
+
+DISPLAY_W, DISPLAY_H = DisplayWindow.get_size()
+pygame.mouse.set_pos(DISPLAY_W, DISPLAY_H)
 
 world = pygame.Surface((VIRTUAL_WIDTH, VIRTUAL_HEIGHT))
 
@@ -28,7 +33,7 @@ world = pygame.Surface((VIRTUAL_WIDTH, VIRTUAL_HEIGHT))
 running = True
 
 #level/maps
-tile_map = "./Assets/Maps/map1.csv"
+tile_map = "./Assets/Maps/map2.csv"
 level = Level.Level()
 level_map = Tiles.TileMap(tile_map)
 map_width = level_map.width * level_map.tile_size
@@ -64,11 +69,16 @@ while running:
     draw_world(world, cam)
 
     p1.player_update(world, cam, level, map_width, map_height) 
-    level.update_level(world)
+    level.update_level(world, cam)
 
     #dummy.player_update(DisplayWindow, p1.pos)
 
+    #DEBUGLINE
+    #pygame.draw.circle(world, (255,0,0), center, 3)
+
     pygame.transform.scale(world, DisplayWindow.get_size(), DisplayWindow)
+
+
     pygame.display.update()
     FramePerSec.tick(FPS)
 
