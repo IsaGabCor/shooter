@@ -10,12 +10,12 @@ WHITE = (255, 255, 255)
 #PLAYER CONSTANTS
 vec = pygame.math.Vector2
 FRIC = -0.12
-ACC = 0.3
+ACC = 0.2
 
 class Player:
     def __init__(self, pos, weapon_data):
         super().__init__()
-        self.surf = pygame.Surface((16,16))
+        self.surf = pygame.Surface((10,14))
         self.surf.fill((125, 125, 125))
         self.rect = self.surf.get_rect()
 
@@ -31,8 +31,8 @@ class Player:
     def player_update(self, window, cam, level, map_width, map_height, sfx):
         pressed_keys = pygame.key.get_pressed()
         mouse_click = pygame.mouse.get_pressed()[0]
-        mouse_pos = pygame.mouse.get_pos()
-        screen_pos = cam.screen_to_world(mouse_pos)
+        #mouse_pos = pygame.mouse.get_pos()
+        screen_pos = cam.screen_to_world(pygame.mouse.get_pos())
 
         self.input(pressed_keys)
         self.physics(map_width, map_height)

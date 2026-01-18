@@ -77,7 +77,8 @@ while running:
     #dummy.player_update(DisplayWindow, p1.pos)
 
     #DEBUGLINE
-    #pygame.draw.circle(world, (255,0,0), center, 3)
+    #pygame.draw.circle(world, (255,0,0), center, 3) #camera
+
 
     pygame.transform.scale(world, DisplayWindow.get_size(), DisplayWindow)
 
@@ -85,3 +86,13 @@ while running:
     pygame.display.update()
     FramePerSec.tick(FPS)
 
+
+    #this can be used for a laser feature later
+ # pygame.draw.line(
+    #     world,
+    #     (0,255,0),
+    #     cam.world_to_screen(p1.pos),
+    #     #cam.world_to_screen(pygame.mouse.get_pos()),
+    #     pygame.mouse.get_pos(),
+    #     1
+    # )

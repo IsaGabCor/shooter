@@ -11,18 +11,37 @@ class Camera:
         self.shake_offset = pygame.math.Vector2(0, 0)
 
     def follow(self, target, map_width, map_height):
-        desired = pygame.math.Vector2(
-            target.rect.centerx - self.width // 2,
-            target.rect.centery - self.height // 2
+        # look ahead values
+        LOOK_RADIUS = 60      # max look distance
+        DEAD_ZONE = 40        # how far mouse must move before camera reacts
+        SMOOTHING = 0.25      # camera smoothing strength
+
+        #Get mouse position in WORLD space
+        mouse_world = pygame.math.Vector2(
+            *self.screen_to_world(pygame.mouse.get_pos())
         )
 
-        #decimal is for smoothing strength
-        self.pos += (desired - self.pos) * 0.3 
+        look_vec = mouse_world - target.pos
 
-        #clamp camera to world
+        # Dead-zone to prevent jitter
+        if look_vec.length() < DEAD_ZONE:
+            look_vec = pygame.math.Vector2(0, 0)
+        else:
+            # remove dead-zone distance but preserve direction
+            look_vec.scale_to_length(
+                min(LOOK_RADIUS, look_vec.length() - DEAD_ZONE)
+            )
+
+        desired = pygame.math.Vector2(
+            target.pos.x + look_vec.x - self.width // 2,
+            target.pos.y + look_vec.y - self.height // 2
+        )
+
+        self.pos += (desired - self.pos) * SMOOTHING
+
         self.pos.x = max(0, min(self.pos.x, map_width - self.width))
         self.pos.y = max(0, min(self.pos.y, map_height - self.height))
-    
+
     def world_to_screen(self, world_pos):
         return (
             (world_pos[0] - self.pos.x + self.shake_offset[0]),

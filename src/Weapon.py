@@ -36,7 +36,7 @@ class Weapon:
             #screen_pos = cam.world_to_screen(self.pos)
 
             if self.current_ammo > 0 and (time_now - self.last_shot_time) > self.fire_rate:
-                cam.add_shake(self.shake_strength)
+                #cam.add_shake(self.shake_strength) #not the best maybe later
                 sfx.play_sound(self.name, 0.8)
                 self.recoil_x = -math.cos(self.gun_angle) * self.recoil
                 self.recoil_y = math.sin(self.gun_angle) * self.recoil

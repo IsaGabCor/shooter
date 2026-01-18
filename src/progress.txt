@@ -14,12 +14,12 @@ features to be refined:
     - more sounds can be created to help with variation
 
 current tasks:
-- fix run n gun bug
 - get walls for collision functional (player and bullets)
 -draw up sprites for players and guns
 
 current bugs:
 - bullets are not accurate to crosshair pos while moving and shooting
+- fix run n gun bug (*******GET A SECOND A OPINION OR REFERENCE ANOTHER GAME*******)
 
 
 
