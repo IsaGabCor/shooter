@@ -14,8 +14,15 @@ features to be refined:
     - more sounds can be created to help with variation
 
 current tasks:
-- center the DAMN MOUSE!!!!
+- fix run n gun bug
+- get walls for collision functional (player and bullets)
+-draw up sprites for players and guns
 
 current bugs:
 - bullets are not accurate to crosshair pos while moving and shooting
+
+
+
+
 - camera shake sets hard position of camera (fixed)
+- center the DAMN MOUSE!!!! (FINALLY FIXED)

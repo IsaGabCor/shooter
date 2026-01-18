@@ -27,7 +27,6 @@ world = pygame.Surface((VIRTUAL_WIDTH, VIRTUAL_HEIGHT))
 #cursor handling
 pygame.event.set_grab(True)  # confines cursor to window
 pygame.mouse.set_visible(False)  # hides the OS cursor
-pygame.mouse.set_pos(DISPLAY_W // 2, DISPLAY_H // 2)
 
 #GAME CONSTANTS
 running = True
@@ -46,9 +45,10 @@ sounds.load_sounds()
 #camera
 cam = Camera.Camera(VIRTUAL_WIDTH, VIRTUAL_HEIGHT)
 center = (VIRTUAL_WIDTH//2, VIRTUAL_HEIGHT//2) # center right now is mostly for debug
+pygame.mouse.set_pos(center)
 
 #players
-p1 = Player.Player((300,500), WEAPON_DATA[1])
+p1 = Player.Player((300,500), WEAPON_DATA[3])
 #dummy = Player.Player((200,100))
 
 #helper functions
