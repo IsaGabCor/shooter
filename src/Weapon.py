@@ -31,7 +31,7 @@ class Weapon:
         self.gun_angle = 0
         
     
-    def fire(self, aim_pos, owner, level, cam, sfx):
+    def fire(self, aim_pos, owner, level, cam, sfx, bullet_mngr):
             time_now = int(time.time() * 1000)
             #screen_pos = cam.world_to_screen(self.pos)
 
@@ -47,11 +47,11 @@ class Weapon:
                         spread = random.uniform(-self.spread, self.spread)
                         angle = self.gun_angle + math.radians(spread)
 
-                        level.add_bullet(
+                        bullet_mngr.spawn(
                             Bullet.Bullet((self.gun_x, self.gun_y), self.accel, self.radius, self.lifetime, angle, owner)
                         )
                 else:
-                    level.add_bullet( Bullet.Bullet((self.gun_x, self.gun_y), self.accel, self.radius, self.lifetime, self.gun_angle, owner) )
+                    bullet_mngr.spawn( Bullet.Bullet((self.gun_x, self.gun_y), self.accel, self.radius, self.lifetime, self.gun_angle, owner) )
     
     #this function will later call on a more robust system
     def reload(self):

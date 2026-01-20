@@ -1,23 +1,27 @@
 shooter game progress
 
-features to be implemented:
-- collision (walls, players and bullets)
+features to be implemented (order of importance):
 - particle system(blood, gun smoke/fire)
-- animations/player sprites
-- map work
-- reload system
 - gun pick up and switching
+- reload system
+- animations/player sprites
 - melee attacks
 
 features to be refined:
 - sounds can be more robust later down the road. volume based on distance to player
     - more sounds can be created to help with variation
+- shooting
+    -recoil/bullet spread (no laser beams), 
 
 current tasks:
-- get walls for collision functional (player and bullets)
--draw up sprites for players and guns
+- draw up sprites for players and guns
+- switch over to using masks for bullets and characters. bullets are chunky at the moment and get stopped while holding
+tight angles
 
 current bugs:
+
+
+backburner bugs:
 - bullets are not accurate to crosshair pos while moving and shooting
 - fix run n gun bug (*******GET A SECOND A OPINION OR REFERENCE ANOTHER GAME*******)
 
@@ -26,3 +30,8 @@ current bugs:
 
 - camera shake sets hard position of camera (fixed)
 - center the DAMN MOUSE!!!! (FINALLY FIXED)
+
+tasks completed:
+- collision (walls, players and bullets)
+    - get walls for collision functional (player and bullets)
+    - still nede to make sure that player takes damage also

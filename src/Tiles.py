@@ -1,23 +1,7 @@
-import pygame
-import csv
+import pygame, pytmx
 
-sheet_png = "./Assets/map_sheets/level_sheet.png"
-map_scale = 3
-
-class SpriteSheet:
-    def __init__(self, filename, tile_size):
-        self.sheet = pygame.image.load(filename).convert_alpha()
-        self.tile_size = tile_size
-        self.columns = self.sheet.get_width() // tile_size
-
-    def get_tile(self, tile_id):
-        x = (tile_id % self.columns) * self.tile_size
-        y = (tile_id // self.columns) * self.tile_size
-
-        image = pygame.Surface((self.tile_size, self.tile_size), pygame.SRCALPHA)
-        image.blit(self.sheet, (0, 0), (x, y, self.tile_size, self.tile_size))
-        return image
-
+#sheet_png = "./Assets/map_sheets/level_sheet.png"
+#map_scale = 3
 
 class Tile(pygame.sprite.Sprite):
     def __init__ (self, image, x, y):
@@ -29,38 +13,133 @@ class Tile(pygame.sprite.Sprite):
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
 
+
 class TileMap:
     def __init__(self, filename):
-        self.tile_size = 16
-        self.width = 0
-        self.height = 0
-        self.tiles = []
+        self.tmx_data = pytmx.load_pygame(filename, pixelalpha=True)
 
-        self.spritesheet = SpriteSheet(sheet_png, self.tile_size)
-        self.load_tiles(filename)
+        self.tile_size = self.tmx_data.tilewidth
+        self.width = self.tmx_data.width
+        self.height = self.tmx_data.height
 
-    def read_csv(self, filename):
-        data = []
-        with open(filename) as file:
-            reader = csv.reader(file)
-            for row in reader:
-                data.append([int(cell) for cell in row])
-        return data
+        self.pixel_width = self.width * self.tile_size
+        self.pixel_height = self.height * self.tile_size
 
-    def load_tiles(self, filename):
-        tile_data = self.read_csv(filename)
+        self.tiles = []          # visual tiles
+        self.collision_rects = []  # solid geometry
 
-        self.width = len(tile_data[0])
-        self.height = len(tile_data)
+        self.load_tiles()
+        self.load_collisions()
+        self.load_spawns()
 
-        for y, row in enumerate(tile_data):
-            for x, tile_id in enumerate(row):
-                if tile_id == -1:
-                    continue
+    def load_tiles(self):
+        for layer in self.tmx_data.visible_layers:
+            if isinstance(layer, pytmx.TiledTileLayer):
+                for x, y, gid in layer:
+                    tile = self.tmx_data.get_tile_image_by_gid(gid)
+                    if tile:
+                        rect = tile.get_rect()
+                        rect.topleft = (
+                            x * self.tile_size,
+                            y * self.tile_size
+                        )
+                        self.tiles.append((tile, rect))
 
-                image = self.spritesheet.get_tile(tile_id)
-                #image = pygame.transform.scale(image, (self.tile_size * map_scale, self.tile_size * map_scale))
-                world_x = x * self.tile_size
-                world_y = y * self.tile_size
+    def load_collisions(self):
+        for layer in self.tmx_data.layers:
+            if isinstance(layer, pytmx.TiledObjectGroup):
+                if layer.name == "Collisions":
+                    for obj in layer:
+                        rect = pygame.Rect(
+                            obj.x,
+                            obj.y,
+                            obj.width,
+                            obj.height
+                        )
+                        self.collision_rects.append(rect)
 
-                self.tiles.append(Tile(image, world_x, world_y))
+    def load_spawns(self):
+        self.player_1_spawn = None
+        self.enemy_spawns = []
+        self.gun_spawns = []
+        self.ammo_spawns = []
+
+        for layer in self.tmx_data.layers:
+            if not isinstance(layer, pytmx.TiledObjectGroup):
+                continue
+
+            if layer.name != "Entities":
+                continue
+
+            for obj in layer:
+                pos = pygame.Vector2(obj.x, obj.y)
+
+                if obj.type == "player_1_spawn":
+                    self.player_1_spawn = pos
+
+                elif obj.type == "enemy_spawn":
+                    enemy_type = obj.properties.get("enemy_type", "grunt")
+                    self.enemy_spawns.append({
+                        "pos": pos,
+                        "type": enemy_type
+                    })
+
+                elif obj.type == "gun_spawn":
+                    weapon_name = obj.properties.get("weapon", "Pistol")
+                    self.gun_spawns.append({
+                        "pos": pos,
+                        "weapon": weapon_name
+                    })
+
+                elif obj.type == "ammo_spawn":
+                    amount = obj.properties.get("amount", 10)
+                    self.ammo_spawns.append({
+                        "pos": pos,
+                        "amount": amount
+                    })
+
+        
+
+    def draw_collisions(self, surface, camera):
+        for rect in self.collision_rects:
+            screen_pos = camera.world_to_screen(rect.topleft)
+            debug_rect = pygame.Rect(
+                screen_pos[0],
+                screen_pos[1],
+                rect.width,
+                rect.height
+            )
+            pygame.draw.rect(surface, (255, 0, 0), debug_rect, 1)
+
+    def draw_spawns_debug(self, surface, cam):
+        if self.player_spawn:
+            pygame.draw.circle(
+                surface, (0, 255, 0),
+                cam.world_to_screen(self.player_spawn),
+                5
+            )
+
+        for e in self.enemy_spawns:
+            pygame.draw.circle(
+                surface, (255, 0, 0),
+                cam.world_to_screen(e["pos"]),
+                5
+            )
+
+        for g in self.gun_spawns:
+            pygame.draw.circle(
+                surface, (0, 0, 255),
+                cam.world_to_screen(g["pos"]),
+                4
+            )
+
+        for a in self.ammo_spawns:
+            pygame.draw.circle(
+                surface, (255, 255, 0),
+                cam.world_to_screen(a["pos"]),
+                4
+            )
+
+
+
+

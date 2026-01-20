@@ -1,9 +1,10 @@
 import pygame, sys, os, json
-import Player, Level, Tiles, Camera, Sounds
+import Player, Level, Tiles, Camera, Sounds, Enemy, Bullet
 
 pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.init()
 pygame.mixer.init()
+vec = pygame.math.Vector2
 
 
 #SYSTEM/WINDOW CONSTANTS
@@ -32,7 +33,7 @@ pygame.mouse.set_visible(False)  # hides the OS cursor
 running = True
 
 #level/maps
-tile_map = "./Assets/Maps/map2.csv"
+tile_map = "./Assets/Maps/map2.tmx"
 level = Level.Level()
 level_map = Tiles.TileMap(tile_map)
 map_width = level_map.width * level_map.tile_size
@@ -48,14 +49,32 @@ center = (VIRTUAL_WIDTH//2, VIRTUAL_HEIGHT//2) # center right now is mostly for 
 pygame.mouse.set_pos(center)
 
 #players
-p1 = Player.Player((300,500), WEAPON_DATA[3])
+p1 = Player.Player(level_map.player_1_spawn, WEAPON_DATA[3])
 #dummy = Player.Player((200,100))
+enemies = []
+bullet_mngr = Bullet.BulletManager()
+
+# # Spawn enemies
+for e in level_map.enemy_spawns:
+    enemies.append(Enemy.Enemy(e["pos"]))
+
+# # Spawn pickups
+# for g in level.gun_spawns:
+#     pickups.append(GunPickup(g["pos"], g["weapon"]))
 
 #helper functions
 def draw_world(world, cam):
-    for tile in level_map.tiles:
-        screen_pos = cam.world_to_screen(tile.rect.topleft)
-        world.blit(tile.image, screen_pos)
+    for tile, rect in level_map.tiles:
+        screen_pos = cam.world_to_screen(rect.topleft)
+        world.blit(tile, screen_pos)
+
+def update_enemies(enemies):
+    for enemy in enemies[:]:
+        enemy.update()
+        enemy.draw(world, cam)
+        if not enemy.alive:
+            enemies.remove(enemy)
+
 
 while running:
     for event in pygame.event.get():
@@ -68,17 +87,14 @@ while running:
     cam.follow(p1, map_width, map_height)
 
     world.fill((10, 10, 10))
-    draw_world(world, cam)
+    draw_world(world, cam) 
+    #level_map.draw_collisions(world, cam) # debug line --- see walls
+    bullet_mngr.update(world, cam, level_map, enemies)
+    p1.player_update(world, cam, level, map_width, map_height, sounds, level_map, bullet_mngr)
+    update_enemies(enemies) 
+    level.update_level(world, cam, level_map, enemies)
 
-    p1.player_update(world, cam, level, map_width, map_height, sounds) 
-    level.update_level(world, cam)
-    
-
-    #dummy.player_update(DisplayWindow, p1.pos)
-
-    #DEBUGLINE
-    #pygame.draw.circle(world, (255,0,0), center, 3) #camera
-
+    #pygame.draw.circle(world, (255,0,0), center, 3) #camera debug line
 
     pygame.transform.scale(world, DisplayWindow.get_size(), DisplayWindow)
 

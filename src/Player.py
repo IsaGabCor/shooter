@@ -10,7 +10,8 @@ WHITE = (255, 255, 255)
 #PLAYER CONSTANTS
 vec = pygame.math.Vector2
 FRIC = -0.12
-ACC = 0.2
+ACC = 0.6
+MAX_SPEED = 2
 
 class Player:
     def __init__(self, pos, weapon_data):
@@ -28,18 +29,18 @@ class Player:
         self.weapon = Weapon.Weapon(weapon_data)
         self.health = 100
 
-    def player_update(self, window, cam, level, map_width, map_height, sfx):
+    def player_update(self, window, cam, level, map_width, map_height, sfx, level_map, bullet_mngr):
         pressed_keys = pygame.key.get_pressed()
         mouse_click = pygame.mouse.get_pressed()[0]
         #mouse_pos = pygame.mouse.get_pos()
         screen_pos = cam.screen_to_world(pygame.mouse.get_pos())
 
         self.input(pressed_keys)
-        self.physics(map_width, map_height)
+        self.physics(level, level_map)
         self.player_draw(window, cam)
-        self.weapon.update_weapon(self.pos, screen_pos, window, cam)
+        self.weapon.update_weapon(self.pos, screen_pos, window, cam, )
         if mouse_click:
-            self.use_weapon(level, screen_pos, cam, sfx)
+            self.use_weapon(level, screen_pos, cam, sfx, bullet_mngr)
         self.display_player_stats(window)
         
     def input(self, keys):
@@ -58,26 +59,46 @@ class Player:
             pygame.event.set_grab(False)  
             pygame.mouse.set_visible(True)
 
-    def physics(self, map_width, map_height):
-        self.acc.x += self.vel.x * FRIC
-        self.acc.y += self.vel.y * FRIC
+    def physics(self, level, level_map):
+        # Apply friction
+        self.acc += self.vel * FRIC
+
+        # Integrate velocity
         self.vel += self.acc
-        self.pos += self.vel + 0.5 * self.acc
 
-        #bounds check
-        if self.pos.x < 0:
-            self.pos.x = 0
-        if self.pos.x > map_width - 16:
-            self.pos.x = map_width - 16
-        if self.pos.y < 0:
-            self.pos.y = 0
-        if self.pos.y > map_height - 16:
-            self.pos.y = map_height - 16
+        # Clamp max speed
+        if self.vel.length() > MAX_SPEED:
+            self.vel.scale_to_length(MAX_SPEED)
 
-        self.rect.center = self.pos
+        # --- X movement ---
+        self.pos.x += self.vel.x
+        self.rect.x = round(self.pos.x)
 
-    def use_weapon(self, level, screen_pos, cam, sfx):
-            self.weapon.fire(screen_pos, self, level, cam, sfx)
+        hit = level.check_collision(self.rect, level_map)
+        if hit:
+            if self.vel.x > 0:
+                self.rect.right = hit.left
+            elif self.vel.x < 0:
+                self.rect.left = hit.right
+            self.pos.x = self.rect.x
+            self.vel.x = 0
+
+        # --- Y movement ---
+        self.pos.y += self.vel.y
+        self.rect.y = round(self.pos.y)
+
+        hit = level.check_collision(self.rect, level_map)
+        if hit:
+            if self.vel.y > 0:
+                self.rect.bottom = hit.top
+            elif self.vel.y < 0:
+                self.rect.top = hit.bottom
+            self.pos.y = self.rect.y
+            self.vel.y = 0
+
+
+    def use_weapon(self, level, screen_pos, cam, sfx, bullet_mngr):
+            self.weapon.fire(screen_pos, self, level, cam, sfx, bullet_mngr)
 
     def display_player_stats(self, window):
         # Font (use a default system font)
@@ -101,5 +122,4 @@ class Player:
         #font = pygame.font.Font(None, 18)
         #text = font.render(str(self.rect.center), True, (255,255,0))
         #window.blit(text, (10,40))
-
 
